@@ -1,0 +1,19 @@
+{
+  "name": "webext-example-hello-world",
+  "version": "1.0.0",
+  "description": "The simplest possible Chrome extension - a hello world example for learning",
+  "author": "Zovo <hello@zovo.one>",
+  "license": "MIT",
+  "scripts": {
+    "build": "echo 'No build required for this simple extension'",
+    "test": "echo 'No tests yet'",
+    "validate": "node scripts/validate-manifest.js"
+  },
+  "keywords": [
+    "chrome-extension",
+    "hello-world",
+    "tutorial",
+    "beginner",
+    "manifest-v3"
+  ]
+}

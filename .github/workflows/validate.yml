@@ -1,0 +1,54 @@
+name: Validate Extension
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Validate manifest.json
+        run: |
+          # Check that manifest.json is valid JSON
+          cat src/manifest.json | python3 -m json.tool > /dev/null
+          echo "✓ manifest.json is valid JSON"
+          
+      - name: Check required fields
+        run: |
+          # Check for required manifest fields
+          python3 << 'EOF'
+          import json
+          import sys
+          
+          with open('src/manifest.json') as f:
+              manifest = json.load(f)
+          
+          required = ['manifest_version', 'name', 'version']
+          for field in required:
+              if field not in manifest:
+                  print(f"✗ Missing required field: {field}")
+                  sys.exit(1)
+          
+          if manifest['manifest_version'] != 3:
+              print("✗ Must use manifest_version 3")
+              sys.exit(1)
+          
+          print("✓ All required fields present")
+          print(f"✓ Extension name: {manifest['name']}")
+          print(f"✓ Extension version: {manifest['version']}")
+          EOF
+          
+      - name: Verify icon files exist
+        run: |
+          if [ -f "src/icons/icon16.png" ] && [ -f "src/icons/icon48.png" ] && [ -f "src/icons/icon128.png" ]; then
+            echo "✓ All required icon sizes present"
+          else
+            echo "✗ Missing icon files"
+            exit 1
+          fi
